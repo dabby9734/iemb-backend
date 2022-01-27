@@ -107,6 +107,31 @@ module.exports = async function (context, req) {
     });
   }
 
+  const postInfo = iembHTML.querySelector(
+    "div.read_message_userinfo_div > div.read_message_usericon"
+  );
+
+  const p = iembHTML.querySelectorAll(
+    "div.read_message_userinfo_div > div.read_message_usericon > div.left"
+  )[1];
+
+  const title = p
+    .querySelector(".read_message_username")
+    .text.match(/Title : (.*) /)[1];
+
+  // const otherInfo = p.querySelectorAll(".read_message_toname");
+  const [senderHTML, receiverHTML, dateHTML] = [
+    ...p.querySelectorAll(".read_message_toname"),
+  ];
+
+  const sender = senderHTML.text.match(/From : (.*)/)[1];
+  const receiver = receiverHTML.text
+    .replace(/\n|\r/g, "")
+    .replace(/;\s*/, "; ")
+    .trim()
+    .match(/Target Audience : (.*)/)[1];
+  const date = dateHTML.text.trim();
+
   // ! close browser
   await browser.close();
 
@@ -120,6 +145,12 @@ module.exports = async function (context, req) {
       message: "Post successfully fetched",
       post: post.innerHTML.toString(),
       attachments: attachments,
+      postInfo: {
+        title: title,
+        sender: sender,
+        receiver: receiver,
+        date: date,
+      },
     }),
   });
 };
