@@ -42,3 +42,8 @@ jobs:
           slot-name: 'Production'
           package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_2D5C2588A73744FABD566CFCD6F9D632 }}
+          # Build on Azure:
+          # To install correct version of chromium binary, 
+          # we need to building in the deployment environment
+          scm-do-build-during-deployment: true
+          enable-oryx-build: true
