@@ -107,10 +107,6 @@ module.exports = async function (context, req) {
     });
   }
 
-  const postInfo = iembHTML.querySelector(
-    "div.read_message_userinfo_div > div.read_message_usericon"
-  );
-
   const p = iembHTML.querySelectorAll(
     "div.read_message_userinfo_div > div.read_message_usericon > div.left"
   )[1];
@@ -132,10 +128,25 @@ module.exports = async function (context, req) {
     .match(/Target Audience : (.*)/)[1];
   const date = dateHTML.text.trim();
 
+  const replyForm = iembHTML.querySelector("form#replyForm");
+
+  let replyFormSelection = "";
+  let replyFormText = "";
+  if (!!replyForm) {
+    // returns string value of selected radio button or undefined if none selected
+    const selectedRadio = replyForm
+      .querySelectorAll("input[name=UserRating]")
+      .find((input) => input.getAttribute("checked"));
+    if (selectedRadio) {
+      replyFormSelection = selectedRadio.getAttribute("value");
+    }
+
+    replyFormText = replyForm.querySelector("textarea#editArea").text;
+  }
   // ! close browser
   await browser.close();
 
-  return (context.res = {
+  context.res = {
     headers: {
       "Access-Control-Allow-Origin": "*",
     },
@@ -151,6 +162,11 @@ module.exports = async function (context, req) {
         receiver: receiver,
         date: date,
       },
+      postReply: {
+        canReply: !!replyForm,
+        selection: replyFormSelection,
+        text: replyFormText,
+      },
     }),
-  });
+  };
 };
