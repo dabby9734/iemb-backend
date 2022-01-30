@@ -8,14 +8,24 @@ module.exports = async function (context, req) {
     req.originalUrl
   );
 
+  if (req.method !== "POST") {
+    context.res = {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers": "Content-Type",
+      },
+      status: 200,
+      body: "Please use POST method",
+    };
+    return;
+  }
+
   const { veriTokenCookie, authToken, sessionID, attachment } = { ...req.body };
 
   if (!veriTokenCookie || !authToken || !sessionID || !attachment) {
     return (context.res = {
       headers: {
-        "access-control-allow-origin": "*",
-        "access-control-allow-methods": "GET, POST",
-        "access-control-allow-headers": "content-type",
+        "Access-Control-Allow-Origin": "*",
       },
       body: JSON.stringify({
         success: false,
@@ -46,9 +56,7 @@ module.exports = async function (context, req) {
     if (needsTokenRefresh) {
       return (context.res = {
         headers: {
-          "access-control-allow-origin": "*",
-          "access-control-allow-methods": "GET, POST",
-          "access-control-allow-headers": "content-type",
+          "Access-Control-Allow-Origin": "*",
         },
         body: JSON.stringify({
           success: false,
@@ -58,9 +66,7 @@ module.exports = async function (context, req) {
     } else {
       return (context.res = {
         headers: {
-          "access-control-allow-origin": "*",
-          "access-control-allow-methods": "GET, POST",
-          "access-control-allow-headers": "content-type",
+          "Access-Control-Allow-Origin": "*",
         },
         body: JSON.stringify({
           success: false,
