@@ -15,7 +15,10 @@ module.exports = async function (context, req) {
         "Access-Control-Allow-Headers": "Content-Type",
       },
       status: 200,
-      body: "Please use POST method",
+      body: JSON.stringify({
+        success: false,
+        message: "Please use POST method",
+      }),
     };
     return;
   }
