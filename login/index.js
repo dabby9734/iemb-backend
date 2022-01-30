@@ -11,7 +11,6 @@ module.exports = async function (context, req) {
       headers: {
         "Access-Control-Allow-Origin": "*",
       },
-      status: 400,
       body: JSON.stringify({
         success: false,
         message: "Missing username and/or password",
@@ -26,7 +25,7 @@ module.exports = async function (context, req) {
   });
 
   if (response.status != 200)
-    context.res = {
+    return (context.res = {
       headers: {
         "Access-Control-Allow-Origin": "*",
       },
@@ -34,7 +33,7 @@ module.exports = async function (context, req) {
         success: false,
         message: "Failed to fetch iemb.hci.edu.sg",
       }),
-    };
+    });
 
   const VERI_TOKEN_COOKIE = response.headers
     .get("set-cookie")
@@ -65,14 +64,13 @@ module.exports = async function (context, req) {
     body: postData,
     redirect: "manual",
   }).catch((err) => {
-    context.res = {
+    return (context.res = {
       headers: {
         "Access-Control-Allow-Origin": "*",
       },
       body: { success: false, message: "Failed to fetch iemb.hci.edu.sg" },
       contentType: "application/json",
-    };
-    return;
+    });
   });
 
   if (loginResponse.status != 302)
