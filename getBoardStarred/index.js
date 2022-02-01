@@ -112,6 +112,8 @@ module.exports = async function (context, req) {
       success: true,
       message: "Successfully fetched messages",
       messages: parsedData,
+      totalPages: data.paging.TotalPage,
+      currentPage: data.paging.CurrentPage,
     }),
   };
 };
