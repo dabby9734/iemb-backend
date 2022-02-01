@@ -11,6 +11,8 @@ module.exports = async function (context, req) {
   const authToken = req.query.authToken;
   const sessionID = req.query.sessionID;
   const boardID = req.query.boardID;
+  const type = req.query.t;
+  const postBy = req.query.postBy;
 
   if (!veriToken || !authToken || !sessionID || !boardID) {
     context.res = {
@@ -26,22 +28,32 @@ module.exports = async function (context, req) {
     return;
   }
 
-  const response = await fetch(
-    `https://iemb.hci.edu.sg/Board/Detail/${boardID}`,
-    {
-      method: "GET",
-      mode: "no-cors",
-      headers: {
-        host: "iemb.hci.edu.sg",
-        referer: "https://iemb.hci.edu.sg/",
-        origin: "https://iemb.hci.edu.sg",
-        "content-type": "application/x-www-form-urlencoded",
-        "user-agent":
-          "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Mobile Safari/537.36",
-        cookie: `__RequestVerificationToken=${veriToken};.Mozilla%2f4.0+(compatible%3b+MSIE+6.1%3b+Windows+XP);ASP.NET_SessionId=${sessionID}; AuthenticationToken=${authToken};`,
-      },
-    }
-  );
+  let path = `/Board/Detail/${boardID}`;
+  switch (type) {
+    case "1": // updated messages
+      path += `?isupdated=True&t=1`;
+      break;
+    case "2": // my messages
+      path += `?postBy=${postBy}&t=2`;
+      break;
+    case "3": // my drafts
+      path = `/Board/Draft/${boardID}`;
+      break;
+  }
+
+  const response = await fetch(`https://iemb.hci.edu.sg/${path}`, {
+    method: "GET",
+    mode: "no-cors",
+    headers: {
+      host: "iemb.hci.edu.sg",
+      referer: "https://iemb.hci.edu.sg/",
+      origin: "https://iemb.hci.edu.sg",
+      "content-type": "application/x-www-form-urlencoded",
+      "user-agent":
+        "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Mobile Safari/537.36",
+      cookie: `__RequestVerificationToken=${veriToken};.Mozilla%2f4.0+(compatible%3b+MSIE+6.1%3b+Windows+XP);ASP.NET_SessionId=${sessionID}; AuthenticationToken=${authToken};`,
+    },
+  });
 
   if (response.status != 200) {
     return (context.res = {
@@ -83,8 +95,9 @@ module.exports = async function (context, req) {
   const messages = [];
 
   if (
+    typeof unreadMessages !== "undefined" &&
     unreadMessages[0].querySelector("td > b")?.text.toString().trim() !==
-    "No Record Found!"
+      "No Record Found!"
   ) {
     unreadMessages.forEach((message) => {
       const data = message.querySelectorAll("td");
@@ -94,7 +107,9 @@ module.exports = async function (context, req) {
         sender: data[1].querySelector("a").getAttribute("tooltip-data"),
         username: data[1].querySelector("a").text.trim(),
         subject: data[2].querySelector("a").text,
-        url: data[2]
+        url: data[2].querySelector("a").getAttribute("href"),
+        boardID: boardID,
+        pid: data[2]
           .querySelector("a")
           .getAttribute("href")
           .match(/\/Board\/content\/(\d+)/)[1],
@@ -103,13 +118,15 @@ module.exports = async function (context, req) {
         viewCount: data[5].text.match(/Viewer:\s+(\d+)/)[1],
         replyCount: data[5].text.match(/Response:\s+(\d+)/)[1],
         read: false,
+        isArchived: false,
       });
     });
   }
 
   if (
+    typeof readMessages !== "undefined" &&
     readMessages[0].querySelector("td > b")?.text.toString().trim() !==
-    "No Record Found!"
+      "No Record Found!"
   ) {
     readMessages.forEach((message) => {
       const data = message.querySelectorAll("td");
@@ -119,7 +136,9 @@ module.exports = async function (context, req) {
         sender: data[1].querySelector("a").getAttribute("tooltip-data"),
         username: data[1].querySelector("a").text.trim(),
         subject: data[2].querySelector("a").text,
-        url: data[2]
+        url: data[2].querySelector("a").getAttribute("href"),
+        boardID: boardID,
+        pid: data[2]
           .querySelector("a")
           .getAttribute("href")
           .match(/\/Board\/content\/(\d+)/)[1],
@@ -128,6 +147,7 @@ module.exports = async function (context, req) {
         viewCount: data[5].text.match(/Viewer:\s+(\d+)/)[1],
         replyCount: data[5].text.match(/Response:\s+(\d+)/)[1],
         read: true,
+        isArchived: false,
       });
     });
   }
