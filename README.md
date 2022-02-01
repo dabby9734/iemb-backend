@@ -9,6 +9,8 @@ All endpoints are prefixed with `/api`
 - login: `/login`
 - getPost: `/getPost`
 - getBoard: `/getBoard`
+- getBoardStarred: `getBoardStarred`
+- getBoardArchived: `getBoardArchived`
 - download: `/download`
 - reply: `/reply`
 
