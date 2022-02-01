@@ -118,7 +118,6 @@ module.exports = async function (context, req) {
         viewCount: data[5].text.match(/Viewer:\s+(\d+)/)[1],
         replyCount: data[5].text.match(/Response:\s+(\d+)/)[1],
         read: false,
-        isArchived: false,
       });
     });
   }
@@ -147,7 +146,6 @@ module.exports = async function (context, req) {
         viewCount: data[5].text.match(/Viewer:\s+(\d+)/)[1],
         replyCount: data[5].text.match(/Response:\s+(\d+)/)[1],
         read: true,
-        isArchived: false,
       });
     });
   }
