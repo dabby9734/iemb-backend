@@ -1,0 +1,812 @@
+openapi: 3.0.2
+info:
+  version: 1.0.0
+  title: intelligent-EMB API
+  x-logo:
+    url: https://i.redd.it/2w5fi2ey4hb61.jpg
+  description: >
+    # Introduction
+
+    This is the official intelligent-EMB API documentation, created for users to
+    interact with <https://iemb.hci.edu.sg> programmatically.. We are not
+    affiliated with nor do we represent the school.
+tags:
+  - name: Login
+    description: Operations associated with logging in
+  - name: Board
+    description: Operations associated with iemb boards
+  - name: Post
+    description: Operations associated with iemb posts
+servers:
+  - url: https://iemb-backend.azurewebsites.net/api
+paths:
+  /login:
+    get:
+      tags:
+        - Login
+      summary: Login user
+      description: Obtain verification tokens, session ids and authentication tokens.
+      parameters:
+        - name: username
+          in: query
+          description: Username of user you are logging in
+          required: true
+          schema:
+            type: string
+        - name: password
+          in: query
+          description: Password of user you are logging in
+          required: true
+          schema:
+            type: string
+      operationId: login
+      security: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    description: Response success status
+                    type: boolean
+                    example: true
+                  VERI_TOKEN_COOKIE:
+                    description: >-
+                      Authorisation for authenticated operations, pass as cookie
+                      `veriToken`
+                    type: string
+                    example: ...
+                  SESSION_ID:
+                    description: >-
+                      Authorisation for authenticated operations, pass as cookie
+                      `sessionID`
+                    type: string
+                    example: ...
+                  AUTH_TOKEN:
+                    description: >-
+                      Authorisation for authenticated operations, pass as cookie
+                      `authToken`
+                    type: string
+                    example: ...
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Login400Response'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+              examples:
+                Service Unavailable:
+                  value:
+                    success: false
+                    message: Failed to fetch iemb.hci.edu.sg
+                Invalid Credentials:
+                  value:
+                    success: false
+                    message: Invalid username or password
+  /getBoard:
+    get:
+      tags:
+        - Board
+      summary: Get board
+      description: >-
+        Retrieve a board from `Inbox`, `My Messages`, `Updated Messages` and `My
+        Drafts`.
+      parameters:
+        - name: veriToken
+          in: query
+          description: Verification Token
+          required: true
+          schema:
+            type: string
+        - name: authToken
+          in: query
+          description: Authentication Token
+          required: true
+          schema:
+            type: string
+        - name: sessionID
+          in: query
+          description: Session ID
+          required: true
+          schema:
+            type: string
+        - name: boardID
+          in: query
+          description: Board ID
+          required: true
+          schema:
+            type: string
+        - name: t
+          in: query
+          description: >-
+            type - 0, 1, 2, 3 for Inbox, Updated Messages, My Messages and My
+            Drafts respectively
+          schema:
+            type: string
+            default: '0'
+        - name: postBy
+          in: query
+          description: Filter posts by author (Only works for t=2)
+          schema:
+            type: string
+      operationId: getBoard
+      security:
+        - Verification Token: []
+          Authentication Token: []
+          Session ID: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getBoard200Response'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MissingParameters'
+        '401':
+          description: Unauthorised, usually due to expired credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefreshToken'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+  /getBoardArchived:
+    get:
+      tags:
+        - Board
+      summary: Get archived board
+      description: Retrieve a board from `Archived`.
+      parameters:
+        - name: veriToken
+          in: query
+          description: Verification Token
+          required: true
+          schema:
+            type: string
+        - name: authToken
+          in: query
+          description: Authentication Token
+          required: true
+          schema:
+            type: string
+        - name: sessionID
+          in: query
+          description: Session ID
+          required: true
+          schema:
+            type: string
+        - name: boardID
+          in: query
+          description: Board ID
+          required: true
+          schema:
+            type: string
+        - name: page
+          in: query
+          description: Page
+          schema:
+            type: string
+            default: '1'
+        - name: sender
+          in: query
+          description: Filter posts by sender
+          schema:
+            type: string
+        - name: subject
+          in: query
+          description: Filter posts by subject
+          schema:
+            type: string
+        - name: content
+          in: query
+          description: Filter posts by content
+          schema:
+            type: string
+      operationId: getBoardArchived
+      security:
+        - Verification Token: []
+          Authentication Token: []
+          Session ID: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getBoardWithPage'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MissingParameters'
+        '401':
+          description: Unauthorised, usually due to expired credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefreshToken'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+  /getBoardStarred:
+    get:
+      tags:
+        - Board
+      summary: Get starred board
+      description: Retrieve a board from `Starred`.
+      parameters:
+        - name: veriToken
+          in: query
+          description: Verification Token
+          required: true
+          schema:
+            type: string
+        - name: authToken
+          in: query
+          description: Authentication Token
+          required: true
+          schema:
+            type: string
+        - name: sessionID
+          in: query
+          description: Session ID
+          required: true
+          schema:
+            type: string
+        - name: boardID
+          in: query
+          description: Board ID
+          required: true
+          schema:
+            type: string
+        - name: page
+          in: query
+          description: Page
+          schema:
+            type: string
+            default: '1'
+      operationId: getBoardStarred
+      security:
+        - Verification Token: []
+          Authentication Token: []
+          Session ID: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getBoardWithPage'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MissingParameters'
+        '401':
+          description: Unauthorised, usually due to expired credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefreshToken'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+  /getPost:
+    get:
+      tags:
+        - Post
+      summary: Get post
+      description: Retrieve a post.
+      parameters:
+        - name: veriToken
+          in: query
+          description: Verification Token
+          required: true
+          schema:
+            type: string
+        - name: authToken
+          in: query
+          description: Authentication Token
+          required: true
+          schema:
+            type: string
+        - name: sessionID
+          in: query
+          description: Session ID
+          required: true
+          schema:
+            type: string
+        - name: boardID
+          in: query
+          description: Board ID
+          required: true
+          schema:
+            type: string
+        - name: pid
+          in: query
+          description: Post ID
+          required: true
+          schema:
+            type: string
+      operationId: getPost
+      security:
+        - Verification Token: []
+          Authentication Token: []
+          Session ID: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getPost200Response'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MissingParameters'
+        '401':
+          description: Unauthorised, usually due to expired credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefreshToken'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+  /download:
+    post:
+      tags:
+        - Post
+      summary: Download attachment
+      description: Download attachment from post
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                veriToken:
+                  description: Verification Token
+                  type: string
+                  example: ...
+                authToken:
+                  description: Authentication Token
+                  type: string
+                  example: ...
+                sessionID:
+                  description: Session ID
+                  type: string
+                  example: ...
+                attachment:
+                  description: Attachment Info (See getPost example)
+                  type: object
+                  properties:
+                    boardID:
+                      type: string
+                      example: '1048'
+                    containerType:
+                      type: string
+                      example: '1'
+                    fileID:
+                      type: string
+                      example: '95326'
+                    fileName:
+                      type: string
+                      example: cute_nekos.png
+                    fileType:
+                      type: string
+                      example: '2'
+                    url:
+                      type: string
+                      example: >-
+                        Board/showFile?t=2&ctype=1&id=95326&file=2022_Orientation_Schedule%20_2%20Feb%20(student).pdf&boardId=1048
+      operationId: download
+      security:
+        - Verification Token: []
+          Authentication Token: []
+          Session ID: []
+      responses:
+        '200':
+          description: OK
+          headers:
+            content-disposition:
+              schema:
+                type: string
+                example: attachment; filename='nekos.pdf'
+              description: Information about the file
+            content-type:
+              schema:
+                type: string
+                example: application/pdf
+              description: Filetype
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                description: The requested file
+                format: binary
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MissingParameters'
+        '401':
+          description: Unauthorised, usually due to expired credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefreshToken'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+  /reply:
+    get:
+      tags:
+        - Post
+      summary: Reply to post
+      description: Reply to a post
+      parameters:
+        - name: veriToken
+          in: query
+          description: Verification Token
+          required: true
+          schema:
+            type: string
+        - name: authToken
+          in: query
+          description: Authentication Token
+          required: true
+          schema:
+            type: string
+        - name: sessionID
+          in: query
+          description: Session ID
+          required: true
+          schema:
+            type: string
+        - name: boardID
+          in: query
+          description: Board ID
+          required: true
+          schema:
+            type: string
+        - name: pid
+          in: query
+          description: Post ID
+          required: true
+          schema:
+            type: string
+        - name: replyContent
+          in: query
+          description: Content to reply with
+          schema:
+            type: string
+        - name: selection
+          in: query
+          description: Option to reply with
+          schema:
+            type: string
+      operationId: reply
+      security:
+        - Verification Token: []
+          Authentication Token: []
+          Session ID: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    description: Response success status
+                    type: boolean
+                    example: true
+                  message:
+                    description: Affirming your awesomeness
+                    type: string
+                    example: Successfully replied
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MissingParameters'
+        '401':
+          description: Unauthorised, usually due to expired credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefreshToken'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+components:
+  securitySchemes:
+    Verification Token:
+      type: apiKey
+      in: query
+      name: veriToken
+    Session ID:
+      type: apiKey
+      in: query
+      name: sessionID
+    Authentication Token:
+      type: apiKey
+      in: query
+      name: authToken
+  schemas:
+    Login400Response:
+      type: object
+      properties:
+        success:
+          description: Response success status
+          type: boolean
+          example: false
+        message:
+          description: Explaining where you screwed up
+          type: string
+          example: Missing username and/or password
+    InternalServerError:
+      type: object
+      properties:
+        success:
+          description: Response success status
+          type: boolean
+          example: false
+        message:
+          description: Explaining where you screwed up
+          type: string
+          example: Failed to fetch iemb.hci.edu.sg
+    getBoard200Response:
+      type: object
+      properties:
+        success:
+          description: Response success status
+          type: boolean
+          example: true
+        name:
+          description: Name of user
+          type: string
+          example: Rasis Man
+        message:
+          description: Affirming your awesomeness
+          type: string
+          example: Messages fetched!
+        messages:
+          description: Messages from the requested board
+          type: array
+          items:
+            type: object
+            properties:
+              date:
+                type: string
+                example: 03-Feb-22
+              sender:
+                type: string
+                example: RASIS MAN,
+              username:
+                type: string
+                example: rasism,
+              subject:
+                type: string
+                example: Why I'm called Rasis Man ,
+              url:
+                type: string
+                example: /Board/content/69420?board=1048&isArchived=False,
+              boardID:
+                type: string
+                example: 1048,
+              pid:
+                type: string
+                example: 69420,
+              urgency:
+                type: string
+                example: Important,
+              recipient:
+                type: string
+                example: 2022 JC1 IP & DSA;,
+              viewCount:
+                type: string
+                example: '3842'
+              replyCount:
+                type: string
+                example: '992'
+              read:
+                type: boolean
+                example: true
+    MissingParameters:
+      type: object
+      properties:
+        success:
+          description: Response success status
+          type: boolean
+          example: false
+        message:
+          description: Explaining where you screwed up
+          type: string
+          example: Missing parameters
+    RefreshToken:
+      type: object
+      properties:
+        success:
+          description: Response success status
+          type: boolean
+          example: false
+        message:
+          description: Explaining where you screwed up
+          type: string
+          example: Needs to refresh token
+    getBoardWithPage:
+      type: object
+      properties:
+        success:
+          description: Response success status
+          type: boolean
+          example: true
+        name:
+          description: Name of user
+          type: string
+          example: Rasis Man
+        message:
+          description: Affirming your awesomeness
+          type: string
+          example: Messages fetched!
+        messages:
+          description: Messages from the requested board
+          type: array
+          items:
+            type: object
+            properties:
+              date:
+                type: string
+                example: 03-Feb-22
+              sender:
+                type: string
+                example: RASIS MAN,
+              username:
+                type: string
+                example: rasism,
+              subject:
+                type: string
+                example: Why I'm called Rasis Man ,
+              url:
+                type: string
+                example: /Board/content/69420?board=1048&isArchived=False,
+              boardID:
+                type: string
+                example: 1048,
+              pid:
+                type: string
+                example: 69420,
+              urgency:
+                type: string
+                example: Important,
+              recipient:
+                type: string
+                example: 2022 JC1 IP & DSA;,
+              viewCount:
+                type: string
+                example: '3842'
+              replyCount:
+                type: string
+                example: '992'
+              read:
+                type: boolean
+                example: true
+        totalPages:
+          description: Total pages
+          type: string
+          example: '69'
+        currentPage:
+          description: Current Page
+          type: string
+          example: '1'
+    getPost200Response:
+      type: object
+      properties:
+        success:
+          description: Response success status
+          type: boolean
+          example: true
+        message:
+          description: Affirming your awesomeness
+          type: string
+          example: Post successfully fetched!
+        post:
+          description: Post content in HTML parsed to string
+          type: string
+          example: ...
+        attachments:
+          type: array
+          items:
+            type: object
+            properties:
+              url:
+                type: string
+                example: >-
+                  Board/showFile?t=2&ctype=1&id=95326&file=dummy.pdf&boardId=1048
+              fileName:
+                type: string
+                example: dummy.pdf
+              fileType:
+                type: string
+                example: '2'
+              fileID:
+                type: string
+                example: '95326'
+              boardID:
+                type: string
+                example: '1048'
+              cotainerType:
+                type: string
+                example: '1'
+        postInfo:
+          description: Post info
+          type: object
+          properties:
+            title:
+              type: string
+              example: You're so cute
+            sender:
+              type: string
+              example: LIU JIASHU
+            receiver:
+              type: string
+              example: EVERYONE
+            date:
+              type: string
+              example: February 02, 2022 09:54:42 PM
+        postReply:
+          description: Post reply
+          type: object
+          properties:
+            canReply:
+              type: boolean
+              example: true
+            selection:
+              type: string
+              example: A
+            text:
+              type: string
+              example: I really agree with this statement

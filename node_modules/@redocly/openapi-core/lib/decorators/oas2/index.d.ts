@@ -1,0 +1,8 @@
+import { Oas2Decorator } from '../../visitors';
+export declare const decorators: {
+    'registry-dependencies': Oas2Decorator;
+    'operation-description-override': Oas2Decorator;
+    'tag-description-override': Oas2Decorator;
+    'info-description-override': Oas2Decorator;
+    'remove-x-internal': Oas2Decorator;
+};
