@@ -1,0 +1,78 @@
+get:
+  tags:
+    - Login
+  summary: Login user
+  description: Obtain verification tokens, session ids and authentication tokens.
+  parameters:
+    - name: username
+      in: query
+      description: Username of user you are logging in
+      required: true
+      schema:
+        type: string
+    - name: password
+      in: query
+      description: Password of user you are logging in
+      required: true
+      schema:
+        type: string
+  operationId: login
+  security: []
+  responses:
+    "200":
+      description: OK
+      # headers:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                description: Response success status
+                type: boolean
+                example: true
+              VERI_TOKEN_COOKIE:
+                description: Authorisation for authenticated operations, pass as cookie `veriToken`
+                type: string
+                example: "..."
+              SESSION_ID:
+                description: Authorisation for authenticated operations, pass as cookie `sessionID`
+                type: string
+                example: "..."
+              AUTH_TOKEN:
+                description: Authorisation for authenticated operations, pass as cookie `authToken`
+                type: string
+                example: "..."
+    "400":
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: "../components/schemas/Login400Response.yaml"
+    "500":
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: "../components/schemas/InternalServerError.yaml"
+          examples:
+            Service Unavailable:
+              value:
+                success: false
+                message: Failed to fetch iemb.hci.edu.sg
+            Invalid Credentials:
+              value:
+                success: false
+                message: Invalid username or password
+  # requestBody:
+  #   content:
+  #     application/json:
+  #       schema:
+  #         type: string
+  #         example: Hello world!
+  #     application/xml:
+  #       schema:
+  #         type: string
+  #         example: Hello world!
+  #   description: Login payload
+  #   required: true

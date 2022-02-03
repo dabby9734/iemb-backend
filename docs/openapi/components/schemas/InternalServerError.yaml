@@ -1,0 +1,10 @@
+type: object
+properties:
+  success:
+    description: Response success status
+    type: boolean
+    example: false
+  message:
+    description: Explaining where you screwed up
+    type: string
+    example: "Failed to fetch iemb.hci.edu.sg"

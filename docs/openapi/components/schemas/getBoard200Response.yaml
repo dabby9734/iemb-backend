@@ -1,0 +1,56 @@
+type: object
+properties:
+  success:
+    description: Response success status
+    type: boolean
+    example: true
+  name:
+    description: Name of user
+    type: string
+    example: Rasis Man
+  message:
+    description: Affirming your awesomeness
+    type: string
+    example: Messages fetched!
+  messages:
+    description: Messages from the requested board
+    type: array
+    items:
+      type: object
+      properties:
+        date:
+          type: string
+          example: 03-Feb-22
+        sender:
+          type: string
+          example: RASIS MAN,
+        username:
+          type: string
+          example: rasism,
+        subject:
+          type: string
+          example: Why I'm called Rasis Man ,
+        url:
+          type: string
+          example: /Board/content/69420?board=1048&isArchived=False,
+        boardID:
+          type: string
+          example: 1048,
+        pid:
+          type: string
+          example: 69420,
+        urgency:
+          type: string
+          example: Important,
+        recipient:
+          type: string
+          example: 2022 JC1 IP & DSA;,
+        viewCount:
+          type: string
+          example: "3842"
+        replyCount:
+          type: string
+          example: "992"
+        read:
+          type: boolean
+          example: true

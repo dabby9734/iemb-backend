@@ -1,0 +1,66 @@
+type: object
+properties:
+  success:
+    description: Response success status
+    type: boolean
+    example: true
+  message:
+    description: Affirming your awesomeness
+    type: string
+    example: Post successfully fetched!
+  post:
+    description: Post content in HTML parsed to string
+    type: string
+    example: "..."
+  attachments:
+    type: array
+    items:
+      type: object
+      properties:
+        url:
+          type: string
+          example: "Board/showFile?t=2&ctype=1&id=95326&file=dummy.pdf&boardId=1048"
+        fileName:
+          type: string
+          example: dummy.pdf
+        fileType:
+          type: string
+          example: "2"
+        fileID:
+          type: string
+          example: "95326"
+        boardID:
+          type: string
+          example: "1048"
+        cotainerType:
+          type: string
+          example: "1"
+  postInfo:
+    description: Post info
+    type: object
+    properties:
+      title:
+        type: string
+        example: You're so cute
+      sender:
+        type: string
+        example: LIU JIASHU
+      receiver:
+        type: string
+        example: EVERYONE
+      date:
+        type: string
+        example: "February 02, 2022 09:54:42 PM"
+  postReply:
+    description: Post reply
+    type: object
+    properties:
+      canReply:
+        type: boolean
+        example: true
+      selection:
+        type: string
+        example: A
+      text:
+        type: string
+        example: I really agree with this statement

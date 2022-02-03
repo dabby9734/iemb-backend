@@ -1,0 +1,15 @@
+{
+  "name": "iemb-api",
+  "version": "1.0.0",
+  "dependencies": {
+    "@redocly/openapi-cli": "^1.0.0-beta.80",
+    "redoc-cli": "^0.13.7"
+  },
+  "private": true,
+  "scripts": {
+    "start": "openapi preview-docs",
+    "build": "openapi bundle -o dist",
+    "test": "openapi lint",
+    "export": "redoc-cli bundle dist.yaml -t docs/index.html && mv redoc-static.html index.html"
+  }
+}

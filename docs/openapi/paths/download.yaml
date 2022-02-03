@@ -1,0 +1,89 @@
+post:
+  tags:
+    - Post
+  summary: Download attachment
+  description: Download attachment from post
+  requestBody:
+    required: true
+    content:
+      application/x-www-form-urlencoded:
+        schema:
+          type: object
+          properties:
+            veriToken:
+              description: Verification Token
+              type: string
+              example: "..."
+            authToken:
+              description: Authentication Token
+              type: string
+              example: "..."
+            sessionID:
+              description: Session ID
+              type: string
+              example: "..."
+            attachment:
+              description: Attachment Info (See getPost example)
+              type: object
+              properties:
+                boardID:
+                  type: string
+                  example: "1048"
+                containerType:
+                  type: "string"
+                  example: "1"
+                fileID:
+                  type: string
+                  example: "95326"
+                fileName:
+                  type: string
+                  example: "cute_nekos.png"
+                fileType:
+                  type: string
+                  example: "2"
+                url:
+                  type: string
+                  example: "Board/showFile?t=2&ctype=1&id=95326&file=2022_Orientation_Schedule%20_2%20Feb%20(student).pdf&boardId=1048"
+  operationId: download
+  security:
+    - "Verification Token": []
+      "Authentication Token": []
+      "Session ID": []
+  responses:
+    "200":
+      description: OK
+      headers:
+        content-disposition:
+          schema:
+            type: string
+            example: attachment; filename='nekos.pdf'
+          description: Information about the file
+        content-type:
+          schema:
+            type: string
+            example: application/pdf
+          description: Filetype
+      content:
+        application/octet-stream:
+          schema:
+            type: string
+            description: The requested file
+            format: binary
+    "400":
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: "../components/schemas/MissingParameters.yaml"
+    "401":
+      description: Unauthorised, usually due to expired credentials
+      content:
+        application/json:
+          schema:
+            $ref: "../components/schemas/RefreshToken.yaml"
+    "500":
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: "../components/schemas/InternalServerError.yaml"
