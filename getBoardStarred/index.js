@@ -4,7 +4,7 @@ const { parse } = require("node-html-parser");
 
 module.exports = async function (context, req) {
   context.log(
-    "JavaScript HTTP trigger function [fetchFavourite] processed a request."
+    "JavaScript HTTP trigger function [getBoardFavourite] processed a request."
   );
 
   const veriToken = req.query.veriToken;
@@ -13,7 +13,7 @@ module.exports = async function (context, req) {
   const boardID = req.query.boardID;
 
   if (!veriToken || !authToken || !sessionID || !boardID) {
-    context.res = {
+    return {
       headers: {
         "Access-Control-Allow-Origin": "*",
       },
@@ -23,7 +23,6 @@ module.exports = async function (context, req) {
         message: "Missing parameters",
       }),
     };
-    return;
   }
 
   const postData = `id=${boardID}&page=1`;
@@ -41,49 +40,36 @@ module.exports = async function (context, req) {
     },
     body: postData,
   }).catch((err) => {
-    context.res = {
+    return {
       headers: {
         "Access-Control-Allow-Origin": "*",
       },
-      status: 200,
+      status: 500,
       body: JSON.stringify({
         success: false,
         message: "Failed to fetch data",
       }),
     };
-    return;
   });
 
-  if (response.status != 200) {
-    const iembHTML = parse(await response.text());
+  const iembHTML = parse(await response.text());
 
-    // check if we are stuck on the sign in page (i.e. needs a token refresh)
-    const needsTokenRefresh = iembHTML.querySelector(".login-page");
-    if (needsTokenRefresh) {
-      return (context.res = {
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-        },
-        body: JSON.stringify({
-          success: false,
-          message: "Needs to refresh token",
-        }),
-      });
-    } else {
-      return (context.res = {
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-        },
-        status: 200,
-        body: JSON.stringify({
-          success: false,
-          message: "An error occured while processing your request",
-        }),
-      });
-    }
+  // check if we are stuck on the sign in page (i.e. needs a token refresh)
+  const needsTokenRefresh = iembHTML.querySelector(".login-page");
+  if (needsTokenRefresh) {
+    return {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+      },
+      status: 401,
+      body: JSON.stringify({
+        success: false,
+        message: "Needs to refresh token",
+      }),
+    };
   }
 
-  const data = await response.json();
+  const data = await JSON.parse(iembHTML.toString());
 
   const parsedData = data.data.map((item) => {
     return {
@@ -103,7 +89,7 @@ module.exports = async function (context, req) {
     };
   });
 
-  context.res = {
+  return {
     headers: {
       "Access-Control-Allow-Origin": "*",
     },

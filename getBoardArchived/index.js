@@ -17,7 +17,7 @@ module.exports = async function (context, req) {
   const content = req.query.content ? req.query.content : "";
 
   if (!veriToken || !authToken || !sessionID || !boardID) {
-    context.res = {
+    return {
       headers: {
         "Access-Control-Allow-Origin": "*",
       },
@@ -27,7 +27,6 @@ module.exports = async function (context, req) {
         message: "Missing parameters",
       }),
     };
-    return;
   }
 
   const postData = `id=${boardID}&page=${page}&postBy=${sender}&title=${subject}&content=${content}`;
@@ -45,17 +44,16 @@ module.exports = async function (context, req) {
     },
     body: postData,
   }).catch((err) => {
-    context.res = {
+    return {
       headers: {
         "Access-Control-Allow-Origin": "*",
       },
-      status: 200,
+      status: 500,
       body: JSON.stringify({
         success: false,
         message: "Failed to fetch data",
       }),
     };
-    return;
   });
 
   if (response.status != 200) {
@@ -64,26 +62,27 @@ module.exports = async function (context, req) {
     // check if we are stuck on the sign in page (i.e. needs a token refresh)
     const needsTokenRefresh = iembHTML.querySelector(".login-page");
     if (needsTokenRefresh) {
-      return (context.res = {
+      return {
         headers: {
           "Access-Control-Allow-Origin": "*",
         },
+        status: 401,
         body: JSON.stringify({
           success: false,
           message: "Needs to refresh token",
         }),
-      });
+      };
     } else {
-      return (context.res = {
+      return {
         headers: {
           "Access-Control-Allow-Origin": "*",
         },
-        status: 200,
+        status: 500,
         body: JSON.stringify({
           success: false,
           message: "An error occured while processing your request",
         }),
-      });
+      };
     }
   }
 
@@ -106,7 +105,7 @@ module.exports = async function (context, req) {
     };
   });
 
-  context.res = {
+  return {
     headers: {
       "Access-Control-Allow-Origin": "*",
     },

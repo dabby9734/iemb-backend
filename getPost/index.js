@@ -14,7 +14,7 @@ module.exports = async function (context, req) {
   const pid = req.query.pid;
 
   if (!veriToken || !authToken || !sessionID || !boardID || !pid) {
-    context.res = {
+    return {
       headers: {
         "Access-Control-Allow-Origin": "*",
       },
@@ -24,7 +24,6 @@ module.exports = async function (context, req) {
         message: "Missing parameters",
       }),
     };
-    return;
   }
 
   const browser = await puppeteer.launch();
@@ -47,31 +46,31 @@ module.exports = async function (context, req) {
   //   check if we are stuck on the sign in page (i.e. needs a token refresh)
   const needsTokenRefresh = iembHTML.querySelector(".login-page");
   if (needsTokenRefresh) {
-    return (context.res = {
+    return {
       headers: {
         "Access-Control-Allow-Origin": "*",
       },
-      status: 200,
+      status: 401,
       body: JSON.stringify({
         success: false,
         message: "Needs to refresh token",
       }),
-    });
+    };
   }
 
   // check if we got sent a `Sorry, an error occurred while processing your request.` instead of the post
   const postExists = iembHTML.querySelector("div.iemb_contents");
   if (!postExists) {
-    return (context.res = {
+    return {
       headers: {
         "Access-Control-Allow-Origin": "*",
       },
-      status: 200,
+      status: 500,
       body: JSON.stringify({
         success: false,
         message: "Error while processing your request, try refreshing the page",
       }),
-    });
+    };
   }
 
   const post = iembHTML.querySelector(
@@ -146,7 +145,7 @@ module.exports = async function (context, req) {
   // ! close browser
   await browser.close();
 
-  context.res = {
+  return {
     headers: {
       "Access-Control-Allow-Origin": "*",
     },

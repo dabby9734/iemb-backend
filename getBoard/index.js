@@ -15,17 +15,16 @@ module.exports = async function (context, req) {
   const postBy = req.query.postBy;
 
   if (!veriToken || !authToken || !sessionID || !boardID) {
-    context.res = {
+    return {
       headers: {
         "Access-Control-Allow-Origin": "*",
       },
-      status: 400,
+      status: 401,
       body: JSON.stringify({
         success: false,
         message: "Missing parameters",
       }),
     };
-    return;
   }
 
   let path = `/Board/Detail/${boardID}`;
@@ -56,16 +55,16 @@ module.exports = async function (context, req) {
   });
 
   if (response.status != 200) {
-    return (context.res = {
+    return {
       headers: {
         "Access-Control-Allow-Origin": "*",
       },
-      status: 200,
+      status: 500,
       body: JSON.stringify({
         success: false,
         message: "An error occured while processing your request",
       }),
-    });
+    };
   }
 
   // parse the html
@@ -74,16 +73,16 @@ module.exports = async function (context, req) {
   // check if we are stuck on the sign in page (i.e. needs a token refresh)
   const needsTokenRefresh = iembHTML.querySelector(".login-page");
   if (needsTokenRefresh) {
-    return (context.res = {
+    return {
       headers: {
         "Access-Control-Allow-Origin": "*",
       },
-      status: 200,
+      status: 401,
       body: JSON.stringify({
         success: false,
         message: "Needs to refresh token",
       }),
-    });
+    };
   }
 
   const messageSections = iembHTML.querySelectorAll("table.tablesorter");
@@ -103,7 +102,7 @@ module.exports = async function (context, req) {
       const data = message.querySelectorAll("td");
 
       messages.push({
-        date: data[0].text,
+        date: data[0].text.replace(/\s+/g, ""),
         sender: data[1].querySelector("a").getAttribute("tooltip-data"),
         username: data[1].querySelector("a").text.trim(),
         subject: data[2].querySelector("a").text,
@@ -131,7 +130,7 @@ module.exports = async function (context, req) {
       const data = message.querySelectorAll("td");
 
       messages.push({
-        date: data[0].text,
+        date: data[0].text.replace(/\s+/g, ""),
         sender: data[1].querySelector("a").getAttribute("tooltip-data"),
         username: data[1].querySelector("a").text.trim(),
         subject: data[2].querySelector("a").text,
@@ -155,7 +154,7 @@ module.exports = async function (context, req) {
     .text.match(/Welcome (.*)/)[1]
     .trim();
 
-  return (context.res = {
+  return {
     headers: {
       "Access-Control-Allow-Origin": "*",
     },
@@ -166,5 +165,5 @@ module.exports = async function (context, req) {
       messages,
       name,
     }),
-  });
+  };
 };

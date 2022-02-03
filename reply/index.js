@@ -14,7 +14,7 @@ module.exports = async function (context, req) {
   const selection = req.query.selection;
 
   if (!veriToken || !authToken || !sessionID || !boardID || !pid) {
-    context.res = {
+    return {
       headers: {
         "Access-Control-Allow-Origin": "*",
       },
@@ -24,7 +24,6 @@ module.exports = async function (context, req) {
         message: "Missing parameters",
       }),
     };
-    return;
   }
 
   const postData = `boardid=${boardID}&topic=${pid}&replyto=0&isArchived=0&UserRating=${selection}&replyContent=${replyContent}&PostMessage=Post+Reply`;
@@ -46,44 +45,47 @@ module.exports = async function (context, req) {
     }
   ).catch((err) => {
     context.log(err);
-    context.res = {
+    return {
       headers: {
         "Access-Control-Allow-Origin": "*",
       },
-      body: { success: false, message: "Failed to fetch iemb.hci.edu.sg" },
-      contentType: "application/json",
+      status: 501,
+      body: JSON.stringify({
+        success: false,
+        message: "Failed to fetch iemb.hci.edu.sg",
+      }),
     };
-    return;
   });
 
   if (response.status != 200)
-    return (context.res = {
+    return {
       headers: {
         "Access-Control-Allow-Origin": "*",
       },
+      status: 500,
       body: JSON.stringify({
         success: false,
         message: "Failed to reply",
       }),
-    });
+    };
 
   const iembHTML = parse(await response.text());
   //   check if we are stuck on the sign in page (i.e. needs a token refresh)
   const needsTokenRefresh = iembHTML.querySelector(".login-page");
   if (needsTokenRefresh) {
-    return (context.res = {
+    return {
       headers: {
         "Access-Control-Allow-Origin": "*",
       },
-      status: 200,
+      status: 401,
       body: JSON.stringify({
         success: false,
         message: "Needs to refresh token",
       }),
-    });
+    };
   }
 
-  return (context.res = {
+  return {
     headers: {
       "Access-Control-Allow-Origin": "*",
     },
@@ -92,5 +94,5 @@ module.exports = async function (context, req) {
       success: true,
       message: "Successfully replied",
     }),
-  });
+  };
 };
