@@ -33,5 +33,4 @@ jobs:
         with:
           deploy_key: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./public
-          force_orphan: true
           exclude_assets: ".github,openapi,.redocly.yaml,LICENSE,README.md"
