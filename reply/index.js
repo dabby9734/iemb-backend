@@ -49,7 +49,7 @@ module.exports = async function (context, req) {
       headers: {
         "Access-Control-Allow-Origin": "*",
       },
-      status: 501,
+      status: 500,
       body: JSON.stringify({
         success: false,
         message: "Failed to fetch iemb.hci.edu.sg",

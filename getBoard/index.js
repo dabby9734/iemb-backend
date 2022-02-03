@@ -19,7 +19,7 @@ module.exports = async function (context, req) {
       headers: {
         "Access-Control-Allow-Origin": "*",
       },
-      status: 401,
+      status: 400,
       body: JSON.stringify({
         success: false,
         message: "Missing parameters",

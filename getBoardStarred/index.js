@@ -11,6 +11,7 @@ module.exports = async function (context, req) {
   const authToken = req.query.authToken;
   const sessionID = req.query.sessionID;
   const boardID = req.query.boardID;
+  const page = req.query.page ? req.query.page : 1;
 
   if (!veriToken || !authToken || !sessionID || !boardID) {
     return {
@@ -25,7 +26,7 @@ module.exports = async function (context, req) {
     };
   }
 
-  const postData = `id=${boardID}&page=1`;
+  const postData = `id=${boardID}&page=${page}`;
   const response = await fetch(`https://iemb.hci.edu.sg/Board/FavouriteList`, {
     method: "POST",
     headers: {

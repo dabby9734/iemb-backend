@@ -1,0 +1,37 @@
+name: Build docs
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: "14.x" # set this to the node version to use (supports 8.x, 10.x, 12.x)
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./docs
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Node ${{ env.NODE_VERSION }} Environment
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install dependencies and build
+        run: |
+          npm install
+          npm run build
+          npm run export
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3.7.3 # https://github.com/peaceiris/actions-gh-pages
+        with:
+          deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+          publish_dir: .
+          force_orphan: true
+          exclude_assets: ".github,openapi,.redocly.yaml,LICENSE,README.md"

@@ -100,3 +100,7 @@ __azurite_db*__.json
 
 # macos things
 .DS_Store
+
+# docs things
+docs/dist.yaml
+docs/index.html

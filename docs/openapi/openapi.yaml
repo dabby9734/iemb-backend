@@ -1,0 +1,55 @@
+openapi: 3.0.2
+info:
+  version: 1.0.0
+  title: intelligent-EMB API
+  # termsOfService: ""
+  # contact:
+  #   name: "Support"
+  #   email: "idk@idk.com"
+  # license:
+  #   name: Apache 2.0
+  #   url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+  x-logo:
+    url: "https://i.redd.it/2w5fi2ey4hb61.jpg"
+  description: >
+    # Introduction
+
+    This is the official intelligent-EMB API documentation, created for users to interact with <https://iemb.hci.edu.sg> programmatically.. We are not affiliated with nor do we represent the school.
+tags:
+  - name: Login
+    description: Operations associated with logging in
+  - name: Board
+    description: Operations associated with iemb boards
+  - name: Post
+    description: Operations associated with iemb posts
+servers:
+  - url: "https://iemb-backend.azurewebsites.net/api"
+paths:
+  /login:
+    $ref: paths/login.yaml
+  /getBoard:
+    $ref: paths/getBoard.yaml
+  /getBoardArchived:
+    $ref: paths/getBoardArchived.yaml
+  /getBoardStarred:
+    $ref: paths/getBoardStarred.yaml
+  /getPost:
+    $ref: paths/getPost.yaml
+  /download:
+    $ref: paths/download.yaml
+  /reply:
+    $ref: paths/reply.yaml
+components:
+  securitySchemes:
+    "Verification Token":
+      type: apiKey
+      in: query
+      name: veriToken
+    "Session ID":
+      type: apiKey
+      in: query
+      name: sessionID
+    "Authentication Token":
+      type: apiKey
+      in: query
+      name: authToken

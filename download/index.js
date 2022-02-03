@@ -30,10 +30,10 @@ module.exports = async function (context, req) {
       headers: {
         "Access-Control-Allow-Origin": "*",
       },
+      status: 400,
       body: JSON.stringify({
         success: false,
-        message:
-          "Please pass a veriTokenCookie, authToken, sessionID, and attachment on the query string or in the request body",
+        message: "Missing parameters",
       }),
     });
   }
@@ -61,6 +61,7 @@ module.exports = async function (context, req) {
         headers: {
           "Access-Control-Allow-Origin": "*",
         },
+        status: 401,
         body: JSON.stringify({
           success: false,
           message: "Needs to refresh token",
@@ -71,6 +72,7 @@ module.exports = async function (context, req) {
         headers: {
           "Access-Control-Allow-Origin": "*",
         },
+        status: 500,
         body: JSON.stringify({
           success: false,
           message: "Failed to download file",
