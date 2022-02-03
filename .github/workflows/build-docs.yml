@@ -33,4 +33,5 @@ jobs:
         if: ${{ github.ref == 'refs/heads/main' }}
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          exclude_assets: '.github,openapi,.redocly.yaml,LICENSE,README.md,node_modules'
           publish_dir: ./docs
