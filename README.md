@@ -2,17 +2,9 @@
 
 This respository includes the [Azure Cloud Functions](https://azure.microsoft.com/en-us/services/functions) for the [intelligent-EMB](https://github.com/dabby9734/intelligent-EMB) website.
 
-## Endpoints
+## Documentation
 
-All endpoints are prefixed with `/api`
-
-- login: `/login`
-- getPost: `/getPost`
-- getBoard: `/getBoard`
-- getBoardStarred: `getBoardStarred`
-- getBoardArchived: `getBoardArchived`
-- download: `/download`
-- reply: `/reply`
+View the documentation for the intelligent-EMB API [here](https://dabby9734.github.io/iemb-backend/).
 
 ## Other Notes
 
