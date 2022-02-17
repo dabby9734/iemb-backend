@@ -92,6 +92,14 @@ module.exports = async function (context, req) {
   });
 
   const messages = [];
+  const getAttribute = (element, attribute, defaultValue) => {
+    let result = defaultValue;
+    try {
+      return element[attribute];
+    } catch (e) {
+      return result;
+    }
+  };
 
   if (
     typeof unreadMessages !== "undefined" &&
@@ -114,8 +122,8 @@ module.exports = async function (context, req) {
           .match(/\/Board\/content\/(\d+)/)[1],
         urgency: data[3].querySelector("img").getAttribute("alt"),
         recipient: data[4].text.trim(),
-        viewCount: data[5].text.match(/Viewer:\s+(\d+)/)[1],
-        replyCount: data[5].text.match(/Response:\s+(\d+)/)[1],
+        viewCount: getAttribute(data[5].text.match(/Viewer:\s+(\d+)/), 1, 0),
+        replyCount: getAttribute(data[5].text.match(/Response:\s+(\d+)/), 1, 0),
         read: false,
       });
     });
@@ -142,8 +150,8 @@ module.exports = async function (context, req) {
           .match(/\/Board\/content\/(\d+)/)[1],
         urgency: data[3].querySelector("img").getAttribute("alt"),
         recipient: data[4].text.trim(),
-        viewCount: data[5].text.match(/Viewer:\s+(\d+)/)[1],
-        replyCount: data[5].text.match(/Response:\s+(\d+)/)[1],
+        viewCount: getAttribute(data[5].text.match(/Viewer:\s+(\d+)/), 1, 0),
+        replyCount: getAttribute(data[5].text.match(/Response:\s+(\d+)/), 1, 0),
         read: true,
       });
     });
