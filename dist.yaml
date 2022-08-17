@@ -563,7 +563,8 @@ paths:
                 $ref: '#/components/schemas/InternalServerError'
   /star:
     post:
-      tags: Post
+      tags:
+        - Post
       summary: Star / Unstar a post
       description: Update the "starred" status of a post
       parameters:
@@ -599,10 +600,10 @@ paths:
             type: string
         - name: status
           in: query
-          description: Post ID
+          description: Status
           required: true
           schema:
-            type: string
+            type: boolean
       operationId: star
       security:
         - Verification Token: []
