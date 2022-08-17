@@ -33,7 +33,7 @@ post:
       required: true
       schema:
         type: string
-     - name: status
+    - name: status
       in: query
       description: Post ID
       required: true
