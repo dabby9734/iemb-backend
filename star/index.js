@@ -60,7 +60,7 @@ module.exports = async function (context, req) {
           body: JSON.stringify({
             success: true,
             message: `Succesfully ${
-              status === "1" ? "starred" : "unstarred"
+              !!status ? "starred" : "unstarred"
             } message`,
           }),
         };
