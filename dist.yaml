@@ -561,6 +561,87 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
+  /star:
+    post:
+      tags: Post
+      summary: Star / Unstar a post
+      description: Update the "starred" status of a post
+      parameters:
+        - name: veriToken
+          in: query
+          description: Verification Token
+          required: true
+          schema:
+            type: string
+        - name: authToken
+          in: query
+          description: Authentication Token
+          required: true
+          schema:
+            type: string
+        - name: sessionID
+          in: query
+          description: Session ID
+          required: true
+          schema:
+            type: string
+        - name: bid
+          in: query
+          description: Board ID
+          required: true
+          schema:
+            type: string
+        - name: pid
+          in: query
+          description: Post ID
+          required: true
+          schema:
+            type: string
+        - name: status
+          in: query
+          description: Post ID
+          required: true
+          schema:
+            type: string
+      operationId: star
+      security:
+        - Verification Token: []
+          Authentication Token: []
+          Session ID: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    description: Response success status
+                    type: boolean
+                    example: true
+                  message:
+                    description: Affirming your awesomeness
+                    type: string
+                    example: Successfully starred message
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MissingParameters'
+        '401':
+          description: Unauthorised, usually due to expired credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefreshToken'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
 components:
   securitySchemes:
     Verification Token:
