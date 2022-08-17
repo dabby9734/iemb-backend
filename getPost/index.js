@@ -94,7 +94,7 @@ module.exports = async function (context, req) {
       const containerType = params[5];
 
       return {
-        url: `Board/showFile?t=${fileType}&ctype=${containerType}&id=${fileID}&file=${encodeURI(
+        url: `Board/showFile?t=${fileType}&ctype=${containerType}&id=${fileID}&file=${encodeURIComponent(
           fileName
         )}&boardId=${boardID}`,
         fileName,

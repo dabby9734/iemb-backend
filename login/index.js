@@ -55,9 +55,9 @@ module.exports = async function (context, req) {
     .toString()
     .match(/<input name=\"__RequestVerificationToken\" .+? value=\"(.+?)\"/)[1];
 
-  const encoded_username = encodeURI(username);
-  const encoded_password = encodeURI(password);
-  const veriToken = encodeURI(VERI_TOKEN);
+  const encoded_username = encodeURIComponent(username);
+  const encoded_password = encodeURIComponent(password);
+  const veriToken = encodeURIComponent(VERI_TOKEN);
 
   const postData = `UserName=${encoded_username}&Password=${encoded_password}&__RequestVerificationToken=${veriToken}&submitbut=Submit`;
   const loginResponse = await fetch("https://iemb.hci.edu.sg/home/logincheck", {

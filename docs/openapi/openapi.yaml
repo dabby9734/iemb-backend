@@ -39,6 +39,8 @@ paths:
     $ref: paths/download.yaml
   /reply:
     $ref: paths/reply.yaml
+  /star:
+    $ref: paths/star.yaml
 components:
   securitySchemes:
     "Verification Token":
