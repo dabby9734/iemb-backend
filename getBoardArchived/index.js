@@ -95,12 +95,12 @@ module.exports = async function (context, req) {
       username: null,
       subject: item.title,
       url: `/Board/Content/${item.id}?board=${item.boardId}&isArchived=${item.isArchived}`,
-      boardID: item.boardId,
-      pid: item.id,
+      boardID: parseInt(item.boardId),
+      pid: parseInt(item.id),
       urgency: null,
       recipient: item.groupName,
-      viewCount: item.viewerCount,
-      replyCount: item.responseCount,
+      viewCount: parseInt(item.viewerCount),
+      replyCount: parseInt(item.responseCount),
       read: null,
     };
   });

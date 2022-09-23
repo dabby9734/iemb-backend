@@ -115,15 +115,21 @@ module.exports = async function (context, req) {
         username: data[1].querySelector("a").text.trim(),
         subject: data[2].querySelector("a").text,
         url: data[2].querySelector("a").getAttribute("href"),
-        boardID: boardID,
-        pid: data[2]
-          .querySelector("a")
-          .getAttribute("href")
-          .match(/\/Board\/content\/(\d+)/)[1],
+        boardID: parseInt(boardID),
+        pid: parseInt(
+          data[2]
+            .querySelector("a")
+            .getAttribute("href")
+            .match(/\/Board\/content\/(\d+)/)[1]
+        ),
         urgency: data[3].querySelector("img").getAttribute("alt"),
         recipient: data[4].text.trim(),
-        viewCount: getAttribute(data[5].text.match(/Viewer:\s+(\d+)/), 1, 0),
-        replyCount: getAttribute(data[5].text.match(/Response:\s+(\d+)/), 1, 0),
+        viewCount: parseInt(
+          getAttribute(data[5].text.match(/Viewer:\s+(\d+)/), 1, 0)
+        ),
+        replyCount: parseInt(
+          getAttribute(data[5].text.match(/Response:\s+(\d+)/), 1, 0)
+        ),
         read: false,
       });
     });
@@ -143,15 +149,21 @@ module.exports = async function (context, req) {
         username: data[1].querySelector("a").text.trim(),
         subject: data[2].querySelector("a").text,
         url: data[2].querySelector("a").getAttribute("href"),
-        boardID: boardID,
-        pid: data[2]
-          .querySelector("a")
-          .getAttribute("href")
-          .match(/\/Board\/content\/(\d+)/)[1],
+        boardID: parseInt(boardID),
+        pid: parseInt(
+          data[2]
+            .querySelector("a")
+            .getAttribute("href")
+            .match(/\/Board\/content\/(\d+)/)[1]
+        ),
         urgency: data[3].querySelector("img").getAttribute("alt"),
         recipient: data[4].text.trim(),
-        viewCount: getAttribute(data[5].text.match(/Viewer:\s+(\d+)/), 1, 0),
-        replyCount: getAttribute(data[5].text.match(/Response:\s+(\d+)/), 1, 0),
+        viewCount: parseInt(
+          getAttribute(data[5].text.match(/Viewer:\s+(\d+)/), 1, 0)
+        ),
+        replyCount: parseInt(
+          getAttribute(data[5].text.match(/Response:\s+(\d+)/), 1, 0)
+        ),
         read: true,
       });
     });
