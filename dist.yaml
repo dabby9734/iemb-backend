@@ -717,10 +717,10 @@ components:
                 type: string
                 example: /Board/content/69420?board=1048&isArchived=False,
               boardID:
-                type: string
+                type: integer
                 example: 1048,
               pid:
-                type: string
+                type: integer
                 example: 69420,
               urgency:
                 type: string
@@ -729,10 +729,10 @@ components:
                 type: string
                 example: 2022 JC1 IP & DSA;,
               viewCount:
-                type: string
+                type: integer
                 example: '3842'
               replyCount:
-                type: string
+                type: integer
                 example: '992'
               read:
                 type: boolean
@@ -796,10 +796,10 @@ components:
                 type: string
                 example: /Board/content/69420?board=1048&isArchived=False,
               boardID:
-                type: string
+                type: integer
                 example: 1048,
               pid:
-                type: string
+                type: integer
                 example: 69420,
               urgency:
                 type: string
@@ -808,11 +808,11 @@ components:
                 type: string
                 example: 2022 JC1 IP & DSA;,
               viewCount:
-                type: string
-                example: '3842'
+                type: integer
+                example: 3842
               replyCount:
-                type: string
-                example: '992'
+                type: integer
+                example: 992
               read:
                 type: boolean
                 example: true
