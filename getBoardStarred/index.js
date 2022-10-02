@@ -53,6 +53,19 @@ module.exports = async function (context, req) {
     };
   });
 
+  if (!response.ok) {
+    return {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+      },
+      status: 500,
+      body: JSON.stringify({
+        success: false,
+        message: "Failed to fetch data",
+      }),
+    };
+  }
+
   const iembHTML = parse(await response.text());
 
   // check if we are stuck on the sign in page (i.e. needs a token refresh)
