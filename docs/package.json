@@ -2,8 +2,8 @@
   "name": "iemb-api",
   "version": "1.0.0",
   "dependencies": {
-    "@redocly/openapi-cli": "^1.0.0-beta.80",
-    "redoc-cli": "^0.13.7"
+    "@redocly/openapi-cli": "^1.0.0-beta.95",
+    "redoc-cli": "^0.13.20"
   },
   "private": true,
   "scripts": {
