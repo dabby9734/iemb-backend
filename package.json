@@ -7,7 +7,7 @@
     "test": "echo \"No tests yet...\""
   },
   "dependencies": {
-    "node-fetch": "^3.2.0",
+    "node-fetch": "^3.2.10",
     "node-html-parser": "^5.2.0",
     "puppeteer": "^13.1.2"
   },
